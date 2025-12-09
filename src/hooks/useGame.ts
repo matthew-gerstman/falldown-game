@@ -43,6 +43,39 @@ export const useGame = () => {
 
   const [keysPressed, setKeysPressed] = useState<Set<string>>(new Set());
 
+  // Keyboard event handlers
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (['arrowleft', 'arrowright', 'a', 'd', ' '].includes(key)) {
+        e.preventDefault();
+        setKeysPressed((prev) => new Set(prev).add(key));
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      setKeysPressed((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+      
+      // Handle space for restart
+      if (key === ' ' && gameState.gameOver) {
+        resetGame();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [gameState.gameOver]);
+
   // Save high score when game ends
   useEffect(() => {
     if (gameState.gameOver && gameState.score > highScore) {

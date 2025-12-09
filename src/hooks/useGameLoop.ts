@@ -10,7 +10,7 @@ export const useGameLoop = (
   setGameState: React.Dispatch<React.SetStateAction<GameState>>,
   keysPressed: Set<string>
 ) => {
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number | undefined>(undefined);
   const keysPressedRef = useRef(keysPressed);
   
   // Update ref when keys change
@@ -123,7 +123,7 @@ export const useGameLoop = (
     animationFrameId.current = requestAnimationFrame(gameLoop);
 
     return () => {
-      if (animationFrameId.current) {
+      if (animationFrameId.current !== undefined) {
         cancelAnimationFrame(animationFrameId.current);
       }
     };

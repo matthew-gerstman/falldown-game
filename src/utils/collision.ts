@@ -16,7 +16,8 @@ export const checkCollision = (ball: Ball, bar: Bar): boolean => {
       return true;
     }
     // Check if ball is hitting the right section of the bar
-    if (ballLeft < bar.gapPosition + bar.gapWidth + bar.gapWidth && ballRight > bar.gapPosition + bar.gapWidth) {
+    const rightSectionStart = bar.gapPosition + bar.gapWidth;
+    if (ballRight > rightSectionStart && ballLeft < 400) {
       return true;
     }
   }

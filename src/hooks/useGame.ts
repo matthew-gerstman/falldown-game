@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { GameState, Ball, Bar, GAME_CONFIG } from '../types/game';
+import type { GameState, Ball, Bar } from '../types/game';
+import { GAME_CONFIG } from '../types/game';
 
 const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, BAR_HEIGHT, BAR_GAP_WIDTH, INITIAL_SPEED, BAR_SPACING } = GAME_CONFIG;
 

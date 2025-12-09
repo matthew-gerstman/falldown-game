@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ball as BallType } from '../types/game';
+import type { Ball as BallType } from '../types/game';
 
 interface BallProps {
   ball: BallType;

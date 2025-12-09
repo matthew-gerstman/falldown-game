@@ -1,4 +1,4 @@
-import { Ball, Bar } from '../types/game';
+import type { Ball, Bar } from '../types/game';
 
 export const checkCollision = (ball: Ball, bar: Bar): boolean => {
   const ballBottom = ball.position.y + ball.radius;

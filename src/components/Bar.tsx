@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bar as BarType, GAME_CONFIG } from '../types/game';
+import type { Bar as BarType } from '../types/game';
+import { GAME_CONFIG } from '../types/game';
 
 interface BarProps {
   bar: BarType;

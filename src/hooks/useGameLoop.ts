@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { GameState, GAME_CONFIG } from '../types/game';
+import type { GameState } from '../types/game';
+import { GAME_CONFIG } from '../types/game';
 import { checkCollision } from '../utils/collision';
 
 const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING } = GAME_CONFIG;
@@ -10,7 +11,6 @@ export const useGameLoop = (
   keysPressed: Set<string>
 ) => {
   const animationFrameId = useRef<number>();
-  const previousBallY = useRef<number>(gameState.ball.position.y);
 
   useEffect(() => {
     if (gameState.gameOver) return;
@@ -106,8 +106,6 @@ export const useGameLoop = (
         if (ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
           newState.gameOver = true;
         }
-
-        previousBallY.current = ball.position.y;
 
         return newState;
       });

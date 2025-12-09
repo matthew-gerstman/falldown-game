@@ -3,7 +3,7 @@ import type { GameState } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { checkCollision } from '../utils/collision';
 
-const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING } = GAME_CONFIG;
+const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING, BAR_GAP_WIDTH, BAR_HEIGHT } = GAME_CONFIG;
 
 export const useGameLoop = (
   gameState: GameState,
@@ -73,9 +73,9 @@ export const useGameLoop = (
             visibleBars.push({
               id: newBarId,
               y: newBarY,
-              gapPosition: Math.random() * (CANVAS_WIDTH - 100),
-              gapWidth: 100,
-              height: 20,
+              gapPosition: Math.random() * (CANVAS_WIDTH - BAR_GAP_WIDTH),
+              gapWidth: BAR_GAP_WIDTH,
+              height: BAR_HEIGHT,
             });
           }
 

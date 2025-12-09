@@ -1,4 +1,7 @@
 import type { Ball, Bar } from '../types/game';
+import { GAME_CONFIG } from '../types/game';
+
+const { CANVAS_WIDTH } = GAME_CONFIG;
 
 export const checkCollision = (ball: Ball, bar: Bar): boolean => {
   const ballBottom = ball.position.y + ball.radius;
@@ -17,7 +20,7 @@ export const checkCollision = (ball: Ball, bar: Bar): boolean => {
     }
     // Check if ball is hitting the right section of the bar
     const rightSectionStart = bar.gapPosition + bar.gapWidth;
-    if (ballRight > rightSectionStart && ballLeft < 400) {
+    if (ballRight > rightSectionStart && ballLeft < CANVAS_WIDTH) {
       return true;
     }
   }

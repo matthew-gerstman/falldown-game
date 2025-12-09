@@ -5,7 +5,7 @@ import { GAME_CONFIG } from '../types/game';
 const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, BAR_HEIGHT, BAR_GAP_WIDTH, INITIAL_SPEED, BAR_SPACING } = GAME_CONFIG;
 
 const createInitialBall = (): Ball => ({
-  position: { x: CANVAS_WIDTH / 2, y: 100 },
+  position: { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT + 50 }, // Start below the canvas
   radius: BALL_RADIUS,
   velocity: { x: 0, y: 0 },
 });

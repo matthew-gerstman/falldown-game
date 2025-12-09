@@ -26,8 +26,6 @@ export const useGameLoop = (
         const { ball, bars, speed } = newState;
         const keys = keysPressedRef.current;
 
-        const prevY = ball.position.y;
-
         // Move ball horizontally
         if (keys.has('arrowleft') || keys.has('a')) {
           ball.position.x -= BALL_MOVE_SPEED;

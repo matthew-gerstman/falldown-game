@@ -12,6 +12,7 @@ export const useGameLoop = (
 ) => {
   const animationFrameId = useRef<number | undefined>(undefined);
   const keysPressedRef = useRef(keysPressed);
+  const ballHasEnteredCanvas = useRef(false);
   
   useEffect(() => {
     keysPressedRef.current = keysPressed;
@@ -39,6 +40,11 @@ export const useGameLoop = (
         // Apply gravity
         ball.velocity.y += GRAVITY;
         ball.position.y += ball.velocity.y;
+
+        // Track if ball has entered canvas
+        if (ball.position.y <= CANVAS_HEIGHT) {
+          ballHasEnteredCanvas.current = true;
+        }
 
         // Top boundary
         if (ball.position.y < BALL_RADIUS) {
@@ -85,8 +91,8 @@ export const useGameLoop = (
         newState.bars = visibleBars;
         newState.speed += SPEED_INCREMENT;
 
-        // Bottom boundary - game over
-        if (ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
+        // Bottom boundary - game over (only after ball has entered canvas)
+        if (ballHasEnteredCanvas.current && ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
           newState.gameOver = true;
         }
 

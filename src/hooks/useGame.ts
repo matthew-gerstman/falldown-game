@@ -7,7 +7,7 @@ const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, BAR_HEIGHT, BAR_GAP_WIDTH, INI
 const createInitialBall = (): Ball => ({
   position: { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT + 50 }, // Start below the canvas
   radius: BALL_RADIUS,
-  velocity: { x: 0, y: 0 },
+  velocity: { x: 0, y: -5 }, // Negative velocity to move upward into canvas
 });
 
 const createBar = (id: number, y: number): Bar => ({

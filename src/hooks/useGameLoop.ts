@@ -3,7 +3,9 @@ import type { GameState } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { checkCollision } from '../utils/collision';
 
-const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING, BAR_GAP_WIDTH, BAR_HEIGHT } = GAME_CONFIG;
+const { CANVAS_WIDTH, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING, BAR_GAP_WIDTH, BAR_HEIGHT } = GAME_CONFIG;
+
+const MAX_VELOCITY = 15; // Cap velocity to prevent runaway acceleration
 
 export const useGameLoop = (
   gameState: GameState,
@@ -12,7 +14,6 @@ export const useGameLoop = (
 ) => {
   const animationFrameId = useRef<number | undefined>(undefined);
   const keysPressedRef = useRef(keysPressed);
-  const ballHasEnteredCanvas = useRef(false);
   
   useEffect(() => {
     keysPressedRef.current = keysPressed;
@@ -39,24 +40,25 @@ export const useGameLoop = (
 
         // Apply gravity
         ball.velocity.y += GRAVITY;
+        
+        // Cap velocity to prevent runaway acceleration
+        ball.velocity.y = Math.min(ball.velocity.y, MAX_VELOCITY);
+        
         ball.position.y += ball.velocity.y;
 
-        // Track if ball has entered canvas
-        if (ball.position.y <= CANVAS_HEIGHT) {
-          ballHasEnteredCanvas.current = true;
-        }
-
-        // Top boundary
+        // Top boundary - GAME OVER (ball gets pushed off the top)
         if (ball.position.y < BALL_RADIUS) {
-          ball.position.y = BALL_RADIUS;
-          ball.velocity.y = 0;
+          newState.gameOver = true;
+          return newState;
         }
 
-        // Check collisions
+        // Check collisions with bars - ball passes through gaps or bounces off bars
         for (const bar of bars) {
           if (checkCollision(ball, bar)) {
-            newState.gameOver = true;
-            return newState;
+            // Ball hit a bar - stop its downward motion
+            ball.velocity.y = 0;
+            // Push ball above the bar
+            ball.position.y = bar.y - BALL_RADIUS;
           }
         }
 
@@ -90,11 +92,6 @@ export const useGameLoop = (
 
         newState.bars = visibleBars;
         newState.speed += SPEED_INCREMENT;
-
-        // Bottom boundary - game over (only after ball has entered canvas)
-        if (ballHasEnteredCanvas.current && ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
-          newState.gameOver = true;
-        }
 
         return newState;
       });

@@ -1,9 +1,14 @@
 import type { Ball, Bar } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 
-const { CANVAS_WIDTH } = GAME_CONFIG;
+const { CANVAS_WIDTH, CANVAS_HEIGHT } = GAME_CONFIG;
 
 export const checkCollision = (ball: Ball, bar: Bar): boolean => {
+  // Don't check collisions until ball is within the visible canvas
+  if (ball.position.y > CANVAS_HEIGHT) {
+    return false;
+  }
+
   const ballBottom = ball.position.y + ball.radius;
   const ballTop = ball.position.y - ball.radius;
   const ballLeft = ball.position.x - ball.radius;

@@ -11,6 +11,12 @@ export const useGameLoop = (
   keysPressed: Set<string>
 ) => {
   const animationFrameId = useRef<number>();
+  const keysPressedRef = useRef(keysPressed);
+  
+  // Update ref when keys change
+  useEffect(() => {
+    keysPressedRef.current = keysPressed;
+  }, [keysPressed]);
 
   useEffect(() => {
     if (gameState.gameOver) return;
@@ -19,15 +25,16 @@ export const useGameLoop = (
       setGameState((prevState) => {
         const newState = { ...prevState };
         const { ball, bars, speed } = newState;
+        const keys = keysPressedRef.current;
 
         // Store previous Y position
         const prevY = ball.position.y;
 
         // Move ball horizontally based on keys
-        if (keysPressed.has('arrowleft') || keysPressed.has('a')) {
+        if (keys.has('arrowleft') || keys.has('a')) {
           ball.position.x -= BALL_MOVE_SPEED;
         }
-        if (keysPressed.has('arrowright') || keysPressed.has('d')) {
+        if (keys.has('arrowright') || keys.has('d')) {
           ball.position.x += BALL_MOVE_SPEED;
         }
 
@@ -120,5 +127,5 @@ export const useGameLoop = (
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [gameState.gameOver, keysPressed, setGameState]);
+  }, [gameState.gameOver, setGameState]);
 };

@@ -68,14 +68,19 @@ export const useGameLoop = (
         });
 
         // Manage bars and scoring
+        // Remove bars that have moved off the top
         const visibleBars = bars.filter((bar) => bar.y > -bar.height);
         
+        // Spawn new bars at the bottom as old ones disappear at the top
         if (visibleBars.length < bars.length) {
           const barsRemoved = bars.length - visibleBars.length;
-          const highestBar = Math.min(...visibleBars.map((b) => b.y));
+          
+          // Find the lowest bar (highest y value)
+          const lowestBar = Math.max(...visibleBars.map((b) => b.y));
           
           for (let i = 0; i < barsRemoved; i++) {
-            const newBarY = highestBar - BAR_SPACING * (i + 1);
+            // Spawn new bars BELOW the lowest bar
+            const newBarY = lowestBar + BAR_SPACING * (i + 1);
             const newBarId = Math.max(...bars.map((b) => b.id)) + 1 + i;
             
             visibleBars.push({

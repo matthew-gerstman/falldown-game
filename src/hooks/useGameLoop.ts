@@ -13,7 +13,6 @@ export const useGameLoop = (
   const animationFrameId = useRef<number | undefined>(undefined);
   const keysPressedRef = useRef(keysPressed);
   
-  // Update ref when keys change
   useEffect(() => {
     keysPressedRef.current = keysPressed;
   }, [keysPressed]);
@@ -27,10 +26,9 @@ export const useGameLoop = (
         const { ball, bars, speed } = newState;
         const keys = keysPressedRef.current;
 
-        // Store previous Y position
         const prevY = ball.position.y;
 
-        // Move ball horizontally based on keys
+        // Move ball horizontally
         if (keys.has('arrowleft') || keys.has('a')) {
           ball.position.x -= BALL_MOVE_SPEED;
         }
@@ -38,40 +36,23 @@ export const useGameLoop = (
           ball.position.x += BALL_MOVE_SPEED;
         }
 
-        // Keep ball within bounds
         ball.position.x = Math.max(BALL_RADIUS, Math.min(CANVAS_WIDTH - BALL_RADIUS, ball.position.x));
 
         // Apply gravity
         ball.velocity.y += GRAVITY;
         ball.position.y += ball.velocity.y;
 
-        // Keep ball from going above screen
+        // Top boundary
         if (ball.position.y < BALL_RADIUS) {
           ball.position.y = BALL_RADIUS;
           ball.velocity.y = 0;
         }
 
-        // Check collisions with bars
+        // Check collisions
         for (const bar of bars) {
           if (checkCollision(ball, bar)) {
-            // Ball hit a bar - game over
             newState.gameOver = true;
             return newState;
-          }
-
-          // Check if ball successfully passed through gap
-          const ballBottom = ball.position.y + ball.radius;
-          const prevBallBottom = prevY + ball.radius;
-          const barTop = bar.y;
-
-          if (prevBallBottom <= barTop && ballBottom > barTop) {
-            const ballLeft = ball.position.x - ball.radius;
-            const ballRight = ball.position.x + ball.radius;
-
-            // Ball passed through gap successfully
-            if (ballLeft >= bar.gapPosition && ballRight <= bar.gapPosition + bar.gapWidth) {
-              // Award points (handled when bar is removed)
-            }
           }
         }
 
@@ -80,7 +61,7 @@ export const useGameLoop = (
           bar.y -= speed;
         });
 
-        // Remove bars that went off screen and add new ones
+        // Manage bars and scoring
         const visibleBars = bars.filter((bar) => bar.y > -bar.height);
         
         if (visibleBars.length < bars.length) {
@@ -100,16 +81,13 @@ export const useGameLoop = (
             });
           }
 
-          // Increment score for each bar passed
           newState.score += barsRemoved;
         }
 
         newState.bars = visibleBars;
-
-        // Progressive difficulty - speed increases over time
         newState.speed += SPEED_INCREMENT;
 
-        // Check if ball fell off bottom
+        // Bottom boundary - game over
         if (ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
           newState.gameOver = true;
         }

@@ -52,13 +52,7 @@ export const useGameLoop = (
           return newState;
         }
 
-        // Bottom boundary - wrap ball to top when it falls below canvas
-        if (ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
-          // Wrap ball to top of canvas
-          ball.position.y = BALL_RADIUS;
-          // Maintain some downward velocity to feel natural
-          ball.velocity.y = Math.max(ball.velocity.y * 0.5, 2);
-        }
+        // Ball can fall below canvas - it will ride up with the bars
 
         // Check collisions with bars - ball passes through gaps or bounces off bars
         for (const bar of bars) {

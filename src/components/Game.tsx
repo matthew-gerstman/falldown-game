@@ -8,10 +8,11 @@ import { GAME_CONFIG } from '../types/game';
 const { CANVAS_WIDTH, CANVAS_HEIGHT, INITIAL_SPEED } = GAME_CONFIG;
 
 export const Game: React.FC = () => {
-  const { gameState, setGameState, keysPressed, resetGame } = useGame();
+  const { gameState, setGameState, keysPressed, resetGame, highScore } = useGame();
   useGameLoop(gameState, setGameState, keysPressed);
 
   const speedMultiplier = (gameState.speed / INITIAL_SPEED).toFixed(1);
+  const isNewHighScore = gameState.score > highScore && gameState.gameOver;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
@@ -19,7 +20,7 @@ export const Game: React.FC = () => {
         Falldown
       </h1>
       
-      {/* Score and Speed Display */}
+      {/* Score, Speed, and High Score Display */}
       <div style={{ 
         display: 'flex', 
         gap: '30px', 
@@ -32,6 +33,9 @@ export const Game: React.FC = () => {
         </div>
         <div style={{ color: '#FF9800' }}>
           Speed: {speedMultiplier}x
+        </div>
+        <div style={{ color: '#9C27B0' }}>
+          Best: {highScore}
         </div>
       </div>
 
@@ -76,12 +80,28 @@ export const Game: React.FC = () => {
             <h2 style={{ fontSize: '48px', margin: '10px', textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
               Game Over!
             </h2>
+            {isNewHighScore && (
+              <p style={{ 
+                fontSize: '24px', 
+                margin: '10px',
+                color: '#FFD700',
+                fontWeight: 'bold',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+              }}>
+                🎉 New High Score! 🎉
+              </p>
+            )}
             <p style={{ fontSize: '28px', margin: '10px' }}>
               Final Score: <strong>{gameState.score}</strong>
             </p>
             <p style={{ fontSize: '20px', margin: '5px', opacity: 0.9 }}>
               Max Speed: {speedMultiplier}x
             </p>
+            {!isNewHighScore && highScore > 0 && (
+              <p style={{ fontSize: '16px', margin: '5px', opacity: 0.7 }}>
+                High Score: {highScore}
+              </p>
+            )}
             <button
               onClick={resetGame}
               style={{

@@ -18,7 +18,20 @@ const createBar = (id: number, y: number): Bar => ({
   height: BAR_HEIGHT,
 });
 
+const getHighScore = (): number => {
+  const saved = localStorage.getItem('falldown-highscore');
+  return saved ? parseInt(saved, 10) : 0;
+};
+
+const saveHighScore = (score: number) => {
+  const current = getHighScore();
+  if (score > current) {
+    localStorage.setItem('falldown-highscore', score.toString());
+  }
+};
+
 export const useGame = () => {
+  const [highScore, setHighScore] = useState(getHighScore());
   const [gameState, setGameState] = useState<GameState>({
     ball: createInitialBall(),
     bars: [
@@ -34,6 +47,14 @@ export const useGame = () => {
   });
 
   const [keysPressed, setKeysPressed] = useState<Set<string>>(new Set());
+
+  // Save high score when game ends
+  useEffect(() => {
+    if (gameState.gameOver && gameState.score > 0) {
+      saveHighScore(gameState.score);
+      setHighScore(getHighScore());
+    }
+  }, [gameState.gameOver, gameState.score]);
 
   // Keyboard controls
   useEffect(() => {
@@ -84,5 +105,6 @@ export const useGame = () => {
     setGameState,
     keysPressed,
     resetGame,
+    highScore,
   };
 };

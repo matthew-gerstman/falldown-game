@@ -3,7 +3,7 @@ import type { GameState } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { checkCollision } from '../utils/collision';
 
-const { CANVAS_WIDTH, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING, BAR_GAP_WIDTH, BAR_HEIGHT } = GAME_CONFIG;
+const { CANVAS_WIDTH, CANVAS_HEIGHT, BALL_RADIUS, GRAVITY, BALL_MOVE_SPEED, SPEED_INCREMENT, BAR_SPACING, BAR_GAP_WIDTH, BAR_HEIGHT } = GAME_CONFIG;
 
 const MAX_VELOCITY = 15; // Cap velocity to prevent runaway acceleration
 
@@ -52,7 +52,13 @@ export const useGameLoop = (
           return newState;
         }
 
-        // No bottom boundary - ball can fall below and will come back up with the bars
+        // Bottom boundary - wrap ball to top when it falls below canvas
+        if (ball.position.y > CANVAS_HEIGHT + BALL_RADIUS) {
+          // Wrap ball to top of canvas
+          ball.position.y = BALL_RADIUS;
+          // Maintain some downward velocity to feel natural
+          ball.velocity.y = Math.max(ball.velocity.y * 0.5, 2);
+        }
 
         // Check collisions with bars - ball passes through gaps or bounces off bars
         for (const bar of bars) {
